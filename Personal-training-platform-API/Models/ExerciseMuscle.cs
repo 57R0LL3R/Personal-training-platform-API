@@ -5,7 +5,7 @@
         public Guid ExerciseId { get; set; } = Guid.NewGuid();
         public Exercise Exercise { get; set; }
 
-        public int MuscleId { get; set; }
+        public Guid MuscleId { get; set; }
         public Muscle Muscle { get; set; }
     }
 
