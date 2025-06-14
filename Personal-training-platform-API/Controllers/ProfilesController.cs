@@ -71,6 +71,7 @@ namespace Personal_training_platform_API.Controllers
         {
             try
             {
+
                 var profile = await _profileService.GetProfileById(id);
                 _profileService.DeleteProfile(profile);
                 return RedirectToAction("Index");
