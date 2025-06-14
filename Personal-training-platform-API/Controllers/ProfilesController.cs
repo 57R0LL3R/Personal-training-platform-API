@@ -6,27 +6,28 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Personal_training_platform_API.Models;
+using Personal_training_platform_API.Services.Interfaces;
 
 namespace Personal_training_platform_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProfilesController(TrainingContext context) : ControllerBase
+    public class ProfilesController(IProfileService profileService) : ControllerBase
     {
-        private readonly TrainingContext _context = context;
+        private readonly IProfileService _profileService = profileService;
 
         // GET: api/Profiles
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Profile>>> GetProfiles()
         {
-            return await _context.Profiles.ToListAsync();
+            return await _profileService.GetProfiles();
         }
 
         // GET: api/Profiles/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Profile>> GetProfile(Guid id)
         {
-            var profile = await _context.Profiles.FindAsync(id);
+            var profile = await _profileService.GetProfileById(id);
 
             if (profile == null)
             {
@@ -41,27 +42,14 @@ namespace Personal_training_platform_API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProfile(Guid id, Profile profile)
         {
-            if (id != profile.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(profile).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _profileService.UpdateProfile(profile,id);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProfileExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
 
             return NoContent();
@@ -72,8 +60,7 @@ namespace Personal_training_platform_API.Controllers
         [HttpPost]
         public async Task<ActionResult<Profile>> PostProfile(Profile profile)
         {
-            _context.Profiles.Add(profile);
-            await _context.SaveChangesAsync();
+            await _profileService.PostProfile(profile);
 
             return CreatedAtAction("GetProfile", new { id = profile.Id }, profile);
         }
@@ -82,21 +69,17 @@ namespace Personal_training_platform_API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProfile(Guid id)
         {
-            var profile = await _context.Profiles.FindAsync(id);
-            if (profile == null)
+            try
             {
-                return NotFound();
+                var profile = await _profileService.GetProfileById(id);
+                _profileService.DeleteProfile(profile);
+                return RedirectToAction("Index");
             }
-
-            _context.Profiles.Remove(profile);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        private bool ProfileExists(Guid id)
-        {
-            return _context.Profiles.Any(e => e.Id == id);
-        }
     }
 }
