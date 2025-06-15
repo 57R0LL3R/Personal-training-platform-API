@@ -11,7 +11,19 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<TrainingContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Define la política de CORS
+var corsPolicyName = "AllowAngularApp";
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: corsPolicyName, policy =>
+    {
+        policy.WithOrigins("http://localhost:4200") // o tu dominio real en producción
+              .AllowAnyMethod() // Permite GET, POST, PUT, DELETE, etc.
+              .AllowAnyHeader() // Permite cualquier header personalizado
+              .AllowCredentials(); // Permite enviar cookies o headers como Authorization
+    });
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
