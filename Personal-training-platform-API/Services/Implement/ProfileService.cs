@@ -6,7 +6,7 @@ using Personal_training_platform_API.Services.Interfaces;
 
 namespace Personal_training_platform_API.Services.Implement
 {
-    public class ProfileServices(TrainingContext context) : IProfileService
+    public class ProfileService(TrainingContext context) : IProfileService
     {
         private readonly TrainingContext _context = context;
 

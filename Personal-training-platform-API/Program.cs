@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Personal_training_platform_API.Models;
+using Personal_training_platform_API.Services.Implement;
+using Personal_training_platform_API.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
