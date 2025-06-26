@@ -25,7 +25,7 @@ namespace Personal_training_platform_API.Services.Implement
         {
             if (id != user.Id)
             {
-                return BadRequest();
+                return id;
             }
 
             _context.Entry(user).State = EntityState.Modified;
