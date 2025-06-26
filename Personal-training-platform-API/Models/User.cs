@@ -8,7 +8,7 @@ namespace Personal_training_platform_API.Models
 
         public string Username { get; set; }
         public string Email { get; set; }
-
+        public string PasswordHash { get; set; }
         public string Role { get; set; }
 
         public Profile Profile { get; set; }
