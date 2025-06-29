@@ -13,7 +13,7 @@ namespace Personal_training_platform_API.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<Response>> PostUser(User user)
+        public async Task<ActionResult<Response>> Login(User user)
         {
             var finaluser = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email && u.PasswordHash == user.PasswordHash);
             if (finaluser == null)
