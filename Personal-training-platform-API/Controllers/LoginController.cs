@@ -27,6 +27,7 @@ namespace Personal_training_platform_API.Controllers
             }
             return new Response
             {
+
                 CodeReponse = 1,
                 Message = "The user exist",
                 Data = finaluser
