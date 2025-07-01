@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Personal_training_platform_API.Models;
 using Personal_training_platform_API.Services.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Personal_training_platform_API.Controllers
 {
@@ -18,14 +19,14 @@ namespace Personal_training_platform_API.Controllers
 
         // GET: api/Profiles
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Profile>>> GetProfiles()
+        public async Task<Response> GetProfiles()
         {
             return await _profileService.GetProfiles();
         }
 
         // GET: api/Profiles/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Profile>> GetProfile(Guid id)
+        public async Task<ActionResult<Response>> GetProfile(Guid id)
         {
             var profile = await _profileService.GetProfileById(id);
 
@@ -39,46 +40,33 @@ namespace Personal_training_platform_API.Controllers
 
         // PUT: api/Profiles/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProfile(Guid id, Profile profile)
+        [HttpPut]
+        public async Task<Response> PutProfile(Profile profile)
         {
-
-            try
-            {
-                await _profileService.UpdateProfile(profile,id);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                return NotFound();
-            }
-
-            return NoContent();
+            return await _profileService.UpdateProfile(profile);
         }
 
         // POST: api/Profiles
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Profile>> PostProfile(Profile profile)
+        public async Task<Response> PostProfile(Profile profile)
         {
-            await _profileService.PostProfile(profile);
+            
 
-            return CreatedAtAction("GetProfile", new { id = profile.Id }, profile);
+            return await _profileService.PostProfile(profile);
         }
 
         // DELETE: api/Profiles/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProfile(Guid id)
+        public async Task<Response> DeleteProfile(Guid id)
         {
             try
             {
-
-                var profile = await _profileService.GetProfileById(id);
-                _profileService.DeleteProfile(profile);
-                return RedirectToAction("Index");
+                return await _profileService.DeleteProfile(id);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return new() { Message ="Error: "+ex.Message };
             }
         }
 

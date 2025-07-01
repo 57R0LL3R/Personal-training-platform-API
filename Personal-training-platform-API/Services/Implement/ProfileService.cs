@@ -11,15 +11,17 @@ namespace Personal_training_platform_API.Services.Implement
     {
         private readonly TrainingContext _context = context;
 
-        public async Task<Response> DeleteProfile(Profile profile)
+        public async Task<Response> DeleteProfile(Guid id)
         {
-            try { 
+            Profile profile = await _context.Profiles.FirstOrDefaultAsync(x => x.Id == id);
+            try
+            {
                 _context.Profiles.Remove(profile);
                 return new() { Message = "El elemento fue eliminado exitosamente", Data = profile };
             }
-            catch
+            catch (Exception ex)
             {
-                return new() { Message = "El elemento no fue eliminado", CodeReponse = 3, Data = profile };
+                return new() { Message = "Error: " + ex.Message, CodeReponse = 3, Data = profile };
 
             }
         }
@@ -29,11 +31,11 @@ namespace Personal_training_platform_API.Services.Implement
             try
             {
                 Profile profile =await _context.Profiles.FirstAsync(x=>x.Id == (id));
-                return new() { Message = "El elemento se encuentro exitosamene", Data = profile };
+                return new() { Message = "El elemento se encontro exitosamene", Data = profile };
             }
-            catch
+            catch (Exception ex)
             {
-                return new() { Message = "El elemento no se encuentra",CodeReponse=3, Data = null };
+                return new() { Message = "Error: " + ex.Message, CodeReponse=3, Data = null };
             }
         }
 
@@ -43,9 +45,9 @@ namespace Personal_training_platform_API.Services.Implement
             {
                 return new() { Message = "La lista se obtuvo exitosamente", Data = await _context.Profiles.ToListAsync() };
             }
-            catch
+            catch (Exception ex)
             {
-                return new() { Message = "Hay un problema con el acceso a los datos", CodeReponse = 3, Data = null }; 
+                return new() { Message = "Error: " + ex.Message, CodeReponse = 3, Data = null }; 
             }
         }
 
@@ -55,12 +57,11 @@ namespace Personal_training_platform_API.Services.Implement
             {
                 await _context.AddAsync(profile);
                 await _context.SaveChangesAsync();
-                return new() { Message = "La lista se obtuvo exitosamente", Data = profile };
+                return new() { Message = "El perfil se creo exitosamente", Data = profile };
             }
             catch (Exception ex)
             {
-                
-                return new() { Message = "Hay un problema con la creacion de un nuevo perfil", CodeReponse = 3, Data = null };
+                return new() { Message = "Error: " + ex.Message, CodeReponse = 3, Data = null };
             }
         }
 
