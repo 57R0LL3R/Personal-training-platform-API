@@ -9,19 +9,19 @@ namespace Personal_training_platform_API.Services.Implement
     {
         private readonly TrainingContext _context = context;
 
-        public async Task<ActionResult<IEnumerable<User?>>> GetUsers()
+        public async Task<Response> GetUsers()
         {
             return await _context.Users.ToListAsync();
         }
 
-        public async Task<ActionResult<User?>> GetUser(Guid id)
+        public async Task<Response> GetUser(Guid id)
         {
             var user = await _context.Users.FindAsync(id);
 
             return user;
         }
 
-        public async Task<IActionResult> PutUser(Guid id, User user)
+        public async Task<Response> PutUser(Guid id, User user)
         {
             if (id != user.Id)
             {
@@ -49,7 +49,7 @@ namespace Personal_training_platform_API.Services.Implement
             return NoContent();
         }
 
-        public async Task<ActionResult<User?>> PostUser(User user)
+        public async Task<Response> PostUser(User user)
         {
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
@@ -57,7 +57,7 @@ namespace Personal_training_platform_API.Services.Implement
             return user;
         }
 
-        public async Task<IActionResult> DeleteUser(Guid id)
+        public async Task<Response> DeleteUser(Guid id)
         {
             var user = await _context.Users.FindAsync(id);
             if (user == null)

@@ -9,12 +9,12 @@ namespace Personal_training_platform_API.Services.Interfaces
 
         // GET: api/Users
         [HttpGet]
-        Task<ActionResult<IEnumerable<User?>>> GetUsers();
-        Task<ActionResult<User?>> GetUser(Guid id);
-        Task<IActionResult> PutUser(Guid id, User user);
-        Task<ActionResult<User?>> PostUser(User user);
+        Task<Response> GetUsers();
+        Task<Response> GetUser(Guid id);
+        Task<Response> PutUser(Guid id, User user);
+        Task<Response> PostUser(User user);
 
-         Task<IActionResult> DeleteUser(Guid id);
+         Task<Response> DeleteUser(Guid id);
 
     }
 }
