@@ -11,7 +11,7 @@ namespace Personal_training_platform_API.Services.Interfaces
         [HttpGet]
         Task<Response> GetUsers();
         Task<Response> GetUser(Guid id);
-        Task<Response> PutUser(Guid id, User user);
+        Task<Response> PutUser(User user);
         Task<Response> PostUser(User user);
 
          Task<Response> DeleteUser(Guid id);

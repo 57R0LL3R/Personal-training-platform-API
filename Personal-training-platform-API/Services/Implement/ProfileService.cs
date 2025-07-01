@@ -11,20 +11,6 @@ namespace Personal_training_platform_API.Services.Implement
     {
         private readonly TrainingContext _context = context;
 
-        public async Task<Response> DeleteProfile(Guid id)
-        {
-            Profile profile = await _context.Profiles.FirstOrDefaultAsync(x => x.Id == id);
-            try
-            {
-                _context.Profiles.Remove(profile);
-                return new() { Message = "El elemento fue eliminado exitosamente", Data = profile };
-            }
-            catch (Exception ex)
-            {
-                return new() { Message = "Error: " + ex.Message, CodeReponse = 3, Data = profile };
-
-            }
-        }
 
         public async Task<Response> GetProfileById(Guid id)
         {
@@ -78,6 +64,20 @@ namespace Personal_training_platform_API.Services.Implement
             else
             {
                 return new() { Message = "El proceso no se realizo",CodeReponse=3, Data = profile };
+            }
+        }
+        public async Task<Response> DeleteProfile(Guid id)
+        {
+            Profile profile = await _context.Profiles.FirstOrDefaultAsync(x => x.Id == id);
+            try
+            {
+                _context.Profiles.Remove(profile);
+                return new() { Message = "El elemento fue eliminado exitosamente", Data = profile };
+            }
+            catch (Exception ex)
+            {
+                return new() { Message = "Error: " + ex.Message, CodeReponse = 3, Data = profile };
+
             }
         }
     }
