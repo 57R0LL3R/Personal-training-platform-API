@@ -16,6 +16,7 @@ namespace Personal_training_platform_API.Services.Implement
         {
             try
             {
+
                 Profile profile =await _context.Profiles.FirstAsync(x=>x.Id == (id));
                 return new() { Message = "El elemento se encontro exitosamene", Data = profile };
             }
