@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Personal_training_platform_API.Models;
 using Personal_training_platform_API.Services.Interfaces;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Personal_training_platform_API.Services.Implement
 {
@@ -11,50 +12,58 @@ namespace Personal_training_platform_API.Services.Implement
 
         public async Task<Response> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            try
+            {
+                return new() { Message = "La lista se obtuvo exitosamente", Data = await _context.Users.ToListAsync() };
+            }
+            catch (Exception ex)
+            {
+                return new() { Message = "Error: " + ex.Message, CodeReponse = 3, Data = null };
+            }
         }
 
         public async Task<Response> GetUser(Guid id)
         {
-            var user = await _context.Users.FindAsync(id);
-
-            return user;
-        }
-
-        public async Task<Response> PutUser(Guid id, User user)
-        {
-            if (id != user.Id)
-            {
-                return id;
-            }
-
-            _context.Entry(user).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                var user = await _context.Users.FirstAsync(x => x.Id == (id));
+                return new() { Message = "El elemento se encontro exitosamene", Data = user };
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return new() { Message = "Error: " + ex.Message, CodeReponse = 3, Data = null };
+            }
+        }
+
+        public async Task<Response> PutUser(User user)
+        {
+            try
+            {
+                _context.Entry(user).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return new() {Data = user };
+            }
+            catch (Exception ex)
+            {
+                return new() { Message = "Error: " + ex.Message, CodeReponse = 3, Data = user };
             }
 
-            return NoContent();
+
         }
 
         public async Task<Response> PostUser(User user)
         {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            return user;
+            try
+            {
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+                return new() { Data = user };
+            }
+            catch(Exception ex) 
+            {
+                return new() { Message = "Error: "+ex.Message, CodeReponse = 3, Data = user };
+            }
         }
 
         public async Task<Response> DeleteUser(Guid id)
@@ -62,13 +71,18 @@ namespace Personal_training_platform_API.Services.Implement
             var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
-                return NotFound();
+                return new() { Message = "Error: No se encuentra el usuario", CodeReponse = 3, Data = user };
             }
-
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            try
+            {
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+                return new() {  Data = user };
+            }
+            catch (Exception ex)
+            {
+                return new() { Message = "Error: " + ex.Message, CodeReponse = 3, Data = user };
+            }
         }
 
         private bool UserExists(Guid id)
