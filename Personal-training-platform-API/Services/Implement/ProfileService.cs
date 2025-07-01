@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Personal_training_platform_API.Models;
 using Personal_training_platform_API.Services.Interfaces;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 
@@ -10,84 +11,73 @@ namespace Personal_training_platform_API.Services.Implement
     {
         private readonly TrainingContext _context = context;
 
-        public string DeleteProfile(Profile profile)
+        public async Task<Response> DeleteProfile(Profile profile)
         {
             try { 
                 _context.Profiles.Remove(profile);
-                return "El elemento fue eliminado exitosamente";
+                return new() { Message = "El elemento fue eliminado exitosamente", Data = profile };
             }
             catch
             {
-                return "El elemento no fue eliminado";
+                return new() { Message = "El elemento no fue eliminado", CodeReponse = 3, Data = profile };
 
             }
         }
 
-        public async Task<Profile> GetProfileById(Guid id)
+        public async Task<Response> GetProfileById(Guid id)
         {
             try
             {
                 Profile profile =await _context.Profiles.FirstAsync(x=>x.Id == (id));
-                return profile;
+                return new() { Message = "El elemento se encuentro exitosamene", Data = profile };
             }
             catch
             {
-                return new Profile();
+                return new() { Message = "El elemento no se encuentra",CodeReponse=3, Data = null };
             }
         }
 
-        public async Task<List<Profile>> GetProfiles()
+        public async Task<Response> GetProfiles()
         {
             try
             {
-                return  await _context.Profiles.ToListAsync();
+                return new() { Message = "La lista se obtuvo exitosamente", Data = await _context.Profiles.ToListAsync() };
             }
             catch
             {
-                return [];
+                return new() { Message = "Hay un problema con el acceso a los datos", CodeReponse = 3, Data = null }; 
             }
         }
 
-        public async Task<Profile> PostProfile(Profile profile)
+        public async Task<Response> PostProfile(Profile profile)
         {
             try
             {
                 await _context.AddAsync(profile);
                 await _context.SaveChangesAsync();
-                return profile;
+                return new() { Message = "La lista se obtuvo exitosamente", Data = profile };
             }
             catch (Exception ex)
             {
-                return new Profile();
+                
+                return new() { Message = "Hay un problema con la creacion de un nuevo perfil", CodeReponse = 3, Data = null };
             }
         }
 
-        public async Task<Profile> UpdateProfile(Profile profile, Guid id)
+        public async Task<Response> UpdateProfile(Profile profile)
         {
-            if (id != profile.Id)
-            {
-                return profile;
-            }
-            Profile profilet = await GetProfileById(id);
-            _context.Entry(profile).State = EntityState.Modified;
 
-            try
+            Response response = await GetProfileById(profile.Id);
+            if (response.Data is not null)
             {
+                _context.Entry(profile).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
+                return new() { Message = "El proceso se realizo exitosamente", Data = profile };
             }
-            catch (DbUpdateConcurrencyException)
+            else
             {
-                if (profilet is null)
-                {
-                    return profile;
-                }
-                else
-                {
-                    throw;
-                }
+                return new() { Message = "El proceso no se realizo",CodeReponse=3, Data = profile };
             }
-
-            return profile;
         }
     }
 }

@@ -2,7 +2,7 @@
 {
     public class Response
     {
-        public int CodeReponse { get; set; }
+        public int CodeReponse { get; set; } = 1;
         public string Message { get; set; }
         public dynamic? Data {get;set;}
     }
