@@ -12,7 +12,6 @@ namespace Personal_training_platform_API.Services.Implement
         private readonly TrainingContext _context = context;
 
 
-
         public async Task<Response> GetProfileById(Guid id)
         {
             try
